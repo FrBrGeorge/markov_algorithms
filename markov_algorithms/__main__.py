@@ -3,7 +3,6 @@
 '''
 import sys
 import argparse
-from pathlib import Path
 from . import NAM
 
 HELPURL = "https://cmcmsu.info/1course/alg.schema.nam.htm"
@@ -19,12 +18,14 @@ def run(machine, word, debug, limit=RUNLIMIT):
             print(f"{len(trace):>{nw}}> ", end="")
             match input()[:1]:
                 case "q":
-                    return
+                    return neword
                 case "b" if len(trace) > 2:
                     trace.pop()
-                    word, rule, neword = loop.send(trace[-2])
-                case _:
-                    trace.append(neword)
+                    trace.pop()
+                    word, rule, neword = loop.send(trace[-1])
+        trace.append(neword)
+        if len(trace) >= limit:
+            raise RuntimeError(f"Limit of {limit} steps is reached, still running")
     return neword
 
 def main(prog, text, debug=None):
@@ -41,7 +42,7 @@ def main(prog, text, debug=None):
 def parseargs(*args):
     parser = argparse.ArgumentParser(description="Markov's Normal Algorithm runner",
                                      epilog=f"See {HELPURL} for syntax and examples")
-    parser.add_argument("scheme", help="Scheme (program)")
+    parser.add_argument("scheme", type=argparse.FileType("r"), help="Scheme (program)")
     parser.add_argument("--debug", "-d", action="store_true", help="Step-by-step execution")
     parser.add_argument("--verbose", "-v", default=0, action='count', help="Increase verbosity")
     parser.add_argument("--input", "-i", help="Input word")
@@ -51,6 +52,6 @@ def parseargs(*args):
 
 if __name__ == "__main__":
     args = parseargs()
-    prog = Path(args.scheme).read_text()
+    prog = args.scheme.read()
     word = args.input or input()
     main(prog, word, args.debug)

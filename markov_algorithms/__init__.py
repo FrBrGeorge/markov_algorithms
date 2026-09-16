@@ -32,7 +32,6 @@ class NAM:
                 if left in word:
                     newword = word.replace(left, right, 1)
                     upword = yield word, self._rulestr(left, op, right), newword
-                    print("@@", word, upword, newword)
                     word = upword or newword
                     break
             else:
