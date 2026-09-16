@@ -15,8 +15,7 @@ def run(machine, word, debug, limit=RUNLIMIT):
     for word, rule, neword in loop:
         if debug:
             print(f"{word} [{rule}] {neword}")
-            print(f"{len(trace):>{nw}}> ", end="")
-            match input()[:1]:
+            match input(f"{len(trace):>{nw}}> ")[:1]:
                 case "q":
                     return neword
                 case "b" if len(trace) > 2:
@@ -53,5 +52,7 @@ def parseargs(*args):
 if __name__ == "__main__":
     args = parseargs()
     prog = args.scheme.read()
+    if args.scheme == sys.stdin:
+        sys.stdin = open("/dev/tty", "r")
     word = args.input or input()
     main(prog, word, args.debug)
