@@ -27,7 +27,7 @@ def run(machine, word, debug, limit=RUNLIMIT):
             raise RuntimeError(f"Limit of {limit} steps is reached, still running")
     return neword
 
-def main(prog, text, debug=None):
+def execute(prog, text, debug=None):
     try:
         machine = NAM(prog)
         print(run(machine, text, debug))
@@ -48,11 +48,14 @@ def parseargs(*args):
     args = parser.parse_args(args or None)
     return args
 
-
-if __name__ == "__main__":
+def main():
     args = parseargs()
     prog = args.scheme.read()
     if args.scheme == sys.stdin:
         sys.stdin = open("/dev/tty", "r")
     word = args.input or input()
     main(prog, word, args.debug)
+
+
+if __name__ == "__main__":
+    main()
