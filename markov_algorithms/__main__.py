@@ -54,7 +54,7 @@ def main():
     if args.scheme == sys.stdin:
         sys.stdin = open("/dev/tty", "r")
     word = args.input or input()
-    main(prog, word, args.debug)
+    execute(prog, word, args.debug)
 
 
 if __name__ == "__main__":
